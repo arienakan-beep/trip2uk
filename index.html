@@ -145,9 +145,6 @@ body {
 }
 .module-select:focus { outline: 2px solid var(--accent); border-color: transparent; }
 .module-select option { padding: 10px; }
-.opt-group { font-weight: 600; color: var(--text); background: #faf9f7; }
-.opt-weather { color: var(--sunny); font-size: .8rem; }
-.opt-hard { color: var(--hard); font-size: .8rem; }
 
 .day-body { padding: 20px 24px; }
 .activity {
@@ -186,11 +183,6 @@ body {
 }
 .tips svg { width: 18px; height: 18px; color: #8ecae6; flex-shrink: 0; margin-top: 2px; }
 .tips-content { font-size: .9rem; color: #1565c0; line-height: 1.6; }
-
-[contenteditable] { cursor: text; }
-[contenteditable]:hover { background: var(--edit-bg); }
-[contenteditable]:focus { background: #fff; outline: 2px solid var(--accent); }
-[contenteditable]:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
 
 .modal-overlay {
   position: fixed;
@@ -309,14 +301,15 @@ body {
       <li><span class="highlight">体力要求高</span>：白崖、约克 — 较累，建议体力充沛时去</li>
       <li><span class="highlight">任意天气/体力</span>：比斯特、大英博物馆+音乐剧、哈利波特工厂、伦敦市内 — 最灵活</li>
       <li><span class="highlight">诺丁山市集</span>：仅周日（10.4）开放，注意安排</li>
+      <li><span class="highlight">10.5离别日</span>：固定为补货+机场，不可更改</li>
     </ul>
-    <p style="margin-top:8px"><strong style="color:var(--accent)">点击任意文字即可编辑</strong>，修改后点击右上角「分享行程」生成链接发给同伴。</p>
+    <p style="margin-top:8px"><strong style="color:var(--accent)">点击右上角「重置」</strong>可恢复所有模块的原始内容。</p>
   </div>
 
   <div id="itinerary"></div>
 
   <div class="footer">
-    <p>点击任意文字即可编辑行程内容 · 点击右上角「重置」恢复默认</p>
+    <p>点击右上角「重置」恢复默认 · 点击「分享行程」生成链接</p>
   </div>
 </div>
 
@@ -337,8 +330,8 @@ body {
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
-// ========== 10个可选模块（去掉抵达和离别） ==========
-const modules = {
+// ========== 模块原始数据（深拷贝用于重置） ==========
+const modulesOriginal = {
   hp: {
     id: 'hp', title: '哈利波特工厂日', emoji: '🧙',
     energy: 'medium', weather: 'any',
@@ -449,36 +442,50 @@ const modules = {
     ],
     tips: '已经去了哈利波特工厂，牛津的基督教堂学院吸引力会下降。但牛津本身很有学术氛围，适合慢慢逛。优先级最低。'
   },
-  londonA: {
-    id: 'londonA', title: '伦敦休闲A', emoji: '🏛️',
+  nature: {
+    id: 'nature', title: '自然博物馆+海德公园日', emoji: '🦕',
+    energy: 'easy', weather: 'any',
+    tag: '轻松日', tagClass: 'tag-easy',
+    activities: [
+      { time: '10:00', content: '自然醒，酒店附近早餐', note: '' },
+      { time: '11:00', content: '自然历史博物馆（Natural History Museum）', note: '免费，酒店隔壁步行5分钟，看蓝鲸骨架' },
+      { time: '13:30', content: '午餐正餐：The Ivy Kensington Brasserie', note: 'Gloucester Road，现代英式，人均 £35-50' },
+      { time: '15:00', content: '海德公园散步、喂天鹅', note: '看戴安娜纪念喷泉' },
+      { time: '17:00', content: 'V&A博物馆 或 肯辛顿宫花园', note: '免费，酒店隔壁' },
+      { time: '19:30', content: '晚餐正餐：Daphne\'s', note: '南肯辛顿，意大利菜，氛围浪漫，人均 £40-60' }
+    ],
+    tips: '全部在酒店附近，不用坐地铁。适合抵达后第一天或累了的时候。蓝鲸骨架和恐龙化石是自然史博物馆必看。'
+  },
+  southken: {
+    id: 'southken', title: '南肯辛顿日', emoji: '🏛️',
     energy: 'easy', weather: 'any',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
-      { time: '11:00', content: 'V&A博物馆 或 自然历史博物馆', note: '免费，酒店隔壁' },
-      { time: '13:30', content: '午餐正餐：Dishoom 或 The Ivy', note: 'Kensington附近' },
-      { time: '15:00', content: '海德公园散步 或 肯辛顿宫', note: '' },
-      { time: '17:00', content: 'Harrods 哈罗德百货', note: '步行15分钟' },
+      { time: '11:00', content: 'V&A博物馆（Victoria and Albert Museum）', note: '免费，酒店隔壁步行3分钟，珠宝/时装馆很适合女生' },
+      { time: '13:30', content: '午餐正餐：Dishoom', note: 'Kensington分店，印度菜，人均£25-35' },
+      { time: '15:00', content: '肯辛顿宫（Kensington Palace）', note: '戴安娜故居，门票约£25，或只逛花园免费' },
+      { time: '17:00', content: '海德公园散步，看皇家阿尔伯特音乐厅外观', note: '' },
       { time: '19:30', content: '晚餐正餐：Daphne\'s', note: '意大利菜，人均£40-60' }
     ],
-    tips: '最轻松的方案，全部在酒店附近，不用坐地铁。适合累了或下雨天。'
+    tips: '最轻松的方案，全部在酒店附近。V&A的珠宝馆和时装馆非常适合女生慢慢逛。肯辛顿宫是戴安娜王妃故居。'
   },
-  londonB: {
-    id: 'londonB', title: '伦敦休闲B', emoji: '🎨',
+  trafalgar: {
+    id: 'trafalgar', title: '特拉法加广场日', emoji: '🎨',
     energy: 'easy', weather: 'any',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
       { time: '11:00', content: '国家美术馆（National Gallery）', note: '特拉法加广场，免费，看梵高《向日葵》' },
       { time: '13:30', content: '午餐正餐：Borough Market', note: '生蚝、松露意面，人均£15-25' },
-      { time: '15:00', content: 'Covent Garden 闲逛 + Soho 逛街', note: '' },
-      { time: '17:00', content: 'Fortnum & Mason 买伴手礼', note: '茶叶、饼干、果酱' },
+      { time: '15:00', content: 'Covent Garden 闲逛 + 街头表演', note: '' },
+      { time: '17:00', content: 'Soho 区逛街，Fortnum & Mason 买伴手礼', note: '茶叶、饼干、果酱' },
       { time: '19:30', content: '晚餐正餐：Hakkasan 或 Bao', note: '米其林中式或台湾创意菜' }
     ],
-    tips: '适合想体验伦敦市中心热闹氛围的日子。Borough Market周末最热闹。'
+    tips: '适合想体验伦敦市中心热闹氛围的日子。Borough Market周末最热闹。Fortnum & Mason是皇室御用茶叶店。'
   },
-  londonC: {
-    id: 'londonC', title: '伦敦休闲C', emoji: '🌉',
+  southbank: {
+    id: 'southbank', title: '泰晤士河南岸日', emoji: '🌉',
     energy: 'easy', weather: 'any',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
@@ -504,10 +511,29 @@ const modules = {
       { time: '19:30', content: '晚餐正餐：The Ivy Kensington', note: '人均£35-50' }
     ],
     tips: 'Portobello Road Market 只有周日最热闹！如果10.4（周日）还没安排，优先考虑这个。'
+  },
+  depart: {
+    id: 'depart', title: '离别日', emoji: '✈️',
+    energy: 'easy', weather: 'any',
+    tag: '离别日', tagClass: 'tag-depart',
+    activities: [
+      { time: '09:00', content: '早起，退房存行李', note: '' },
+      { time: '09:30', content: '地铁到特拉法加广场，最后打卡', note: '或去Covent Garden补货' },
+      { time: '11:00', content: 'Fortnum & Mason 或 Liberty 最后买伴手礼', note: '茶叶、围巾、香水' },
+      { time: '12:30', content: '午餐正餐（最后一顿）：Bao Soho 或 Dishoom', note: '' },
+      { time: '14:00', content: '回酒店取行李', note: '' },
+      { time: '14:30', content: 'Piccadilly 线直达希思罗机场', note: '约50分钟' },
+      { time: '16:00', content: '到达机场，退税、值机、逛免税店', note: '' },
+      { time: '22:00', content: '航班起飞，返回上海', note: '✈️' }
+    ],
+    tips: '上午安排充实一点，把之前没买到的东西补齐。Oyster Card 或 Contactless 支付很方便，地铁公交都能用，每天封顶£8.5。'
   }
 };
 
-// ========== 8天日期配置（9.28-10.5） ==========
+// 运行时模块数据（深拷贝，重置时从这里恢复）
+let modules = JSON.parse(JSON.stringify(modulesOriginal));
+
+// ========== 8天日期配置（9.28-10.5，10.5固定） ==========
 const dayConfig = [
   { date: '9月28日', weekday: '周一', fixed: false, editable: true },
   { date: '9月29日', weekday: '周二', fixed: false, editable: true },
@@ -516,7 +542,7 @@ const dayConfig = [
   { date: '10月2日', weekday: '周五', fixed: false, editable: true },
   { date: '10月3日', weekday: '周六', fixed: false, editable: true },
   { date: '10月4日', weekday: '周日', fixed: false, editable: true },
-  { date: '10月5日', weekday: '周一', fixed: false, editable: true }
+  { date: '10月5日', weekday: '周一', fixed: true, moduleId: 'depart' }
 ];
 
 let dayAssignments = {}; // dayIndex -> moduleId
@@ -542,7 +568,7 @@ function buildOptions(dayIdx) {
   
   // 分组：任意天气
   html += '<optgroup label="任意天气">';
-  const anyGroup = ['hp', 'bicester', 'museum', 'york', 'oxford', 'londonA', 'londonB', 'londonC'];
+  const anyGroup = ['hp', 'bicester', 'museum', 'york', 'oxford', 'nature', 'southken', 'trafalgar', 'southbank'];
   anyGroup.forEach(id => {
     const m = modules[id];
     const isUsed = used.includes(id) && current !== id;
@@ -567,8 +593,19 @@ function buildOptions(dayIdx) {
 function renderItinerary() {
   const el = document.getElementById('itinerary');
   el.innerHTML = dayConfig.map((day, i) => {
-    const assignedId = dayAssignments[i];
+    let assignedId = dayAssignments[i];
+    if (day.fixed) assignedId = day.moduleId;
+    
     const mod = assignedId ? modules[assignedId] : null;
+    
+    // 10.5固定日不显示下拉
+    const selectHtml = day.fixed ? '' : 
+      `<select class="module-select" onchange="selectDayModule(${i}, this.value)">
+        ${buildOptions(i)}
+      </select>`;
+    
+    // 固定日显示固定标签
+    const fixedTag = day.fixed ? '<span style="font-size:.8rem;color:var(--text-light);margin-left:8px;">（固定）</span>' : '';
     
     return `
       <div class="day-card" data-idx="${i}">
@@ -577,24 +614,23 @@ function renderItinerary() {
             <div class="day-date">${day.date}</div>
             <div class="day-weekday">${day.weekday}</div>
             ${mod ? `<div class="day-tag ${mod.tagClass}">${mod.tag}</div>` : ''}
+            ${fixedTag}
           </div>
-          <select class="module-select" onchange="selectDayModule(${i}, this.value)">
-            ${buildOptions(i)}
-          </select>
+          ${selectHtml}
         </div>
         ${mod ? `
         <div class="day-body">
           ${mod.activities.map((act, j) => `
             <div class="activity">
-              <div class="act-time" contenteditable="true" data-placeholder="时间" onblur="updateAct('${assignedId}', ${j}, 'time', this)">${act.time}</div>
-              <div class="act-content" contenteditable="true" data-placeholder="活动内容" onblur="updateAct('${assignedId}', ${j}, 'content', this)">${act.content}</div>
-              ${act.note ? `<div class="act-note" contenteditable="true" data-placeholder="备注" onblur="updateAct('${assignedId}', ${j}, 'note', this)">${act.note}</div>` : ''}
+              <div class="act-time">${act.time}</div>
+              <div class="act-content">${act.content}</div>
+              ${act.note ? `<div class="act-note">${act.note}</div>` : ''}
             </div>
           `).join('')}
           ${mod.tips ? `
             <div class="tips">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
-              <div class="tips-content" contenteditable="true" data-placeholder="小贴士" onblur="updateTips('${assignedId}', this)">${mod.tips}</div>
+              <div class="tips-content">${mod.tips}</div>
             </div>
           ` : ''}
         </div>
@@ -613,20 +649,6 @@ function selectDayModule(dayIdx, moduleId) {
   }
   renderItinerary();
   encodeUrl();
-}
-
-function updateAct(moduleId, actIdx, field, el) {
-  if (modules[moduleId]) {
-    modules[moduleId].activities[actIdx][field] = el.innerText.trim();
-    encodeUrl();
-  }
-}
-
-function updateTips(moduleId, el) {
-  if (modules[moduleId]) {
-    modules[moduleId].tips = el.innerText.trim();
-    encodeUrl();
-  }
 }
 
 // ========== URL编码 ==========
@@ -684,7 +706,9 @@ function showToast(msg) {
 }
 
 function resetAll() {
-  if (!confirm('确定要重置所有选择吗？每日安排将全部清空。')) return;
+  if (!confirm('确定要重置所有选择吗？每日安排将全部清空（10.5离别日除外）。')) return;
+  // 深拷贝恢复原始模块数据
+  modules = JSON.parse(JSON.stringify(modulesOriginal));
   dayAssignments = {};
   const url = new URL(window.location.href);
   url.searchParams.delete('plan');
