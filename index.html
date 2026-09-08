@@ -15,10 +15,6 @@
   --text-light: #6b6b6b;
   --border: #e8e4de;
   --sunny: #f4a261;
-  --cloudy: #8ecae6;
-  --rainy: #6c757d;
-  --easy: #81c784;
-  --medium: #ffb74d;
   --hard: #e57373;
   --shadow: 0 2px 12px rgba(0,0,0,0.06);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.1);
@@ -48,7 +44,7 @@ body {
 }
 .header-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
 .header h1 { font-family: 'Noto Serif SC', serif; font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: 2px; }
-.header .subtitle { font-size: 1rem; opacity: .8; margin-bottom: 20px; font-weight: 300; }
+.header .subtitle { font-size: .95rem; opacity: .7; margin-bottom: 20px; font-weight: 300; letter-spacing: 1px; }
 .trip-meta { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
 .trip-meta span { display: flex; align-items: center; gap: 6px; font-size: .9rem; opacity: .9; }
 .trip-meta svg { width: 16px; height: 16px; opacity: .7; }
@@ -94,8 +90,7 @@ body {
 
 .container { max-width: 800px; margin: -32px auto 48px; padding: 0 20px; position: relative; z-index: 2; }
 
-/* 状态选择面板 */
-.state-panel {
+.intro-card {
   background: var(--card);
   border-radius: 16px;
   padding: 24px;
@@ -103,87 +98,12 @@ body {
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
-.state-panel h2 {
-  font-family: 'Noto Serif SC', serif;
-  font-size: 1.1rem;
-  margin-bottom: 16px;
-  color: var(--text);
-}
-.state-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
-.state-group { flex: 1; min-width: 200px; }
-.state-label { font-size: .85rem; color: var(--text-light); margin-bottom: 8px; font-weight: 500; }
-.state-options { display: flex; gap: 8px; flex-wrap: wrap; }
-.state-btn {
-  padding: 10px 18px;
-  border-radius: 12px;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: .9rem;
-  transition: all .2s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.state-btn:hover { border-color: var(--accent-light); }
-.state-btn.active { border-color: var(--accent); background: linear-gradient(135deg, #faf7f2, #f5f0e8); font-weight: 600; }
+.intro-card h2 { font-family: 'Noto Serif SC', serif; font-size: 1.1rem; margin-bottom: 12px; color: var(--text); }
+.intro-card p { font-size: .9rem; color: var(--text-light); line-height: 1.8; }
+.intro-card ul { margin-top: 8px; padding-left: 20px; font-size: .9rem; color: var(--text-light); }
+.intro-card li { margin-bottom: 4px; }
+.highlight { color: var(--accent); font-weight: 600; }
 
-.recommendation {
-  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-  border-radius: 12px;
-  padding: 14px 18px;
-  border-left: 3px solid var(--easy);
-  font-size: .9rem;
-  color: #2e7d32;
-  line-height: 1.6;
-}
-.recommendation strong { color: var(--text); }
-
-/* 模块库 */
-.module-library {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-.module-library h2 {
-  font-family: 'Noto Serif SC', serif;
-  font-size: 1.1rem;
-  margin-bottom: 16px;
-  color: var(--text);
-}
-.module-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-.module-chip {
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: .85rem;
-  transition: all .2s;
-  text-align: left;
-}
-.module-chip:hover { border-color: var(--accent-light); transform: translateY(-1px); }
-.module-chip.recommended { border-color: var(--accent); background: linear-gradient(135deg, #faf7f2, #f5f0e8); }
-.module-chip.used { opacity: .4; cursor: not-allowed; border-color: var(--border); }
-.module-chip .chip-title { font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-.module-chip .chip-meta { font-size: .75rem; color: var(--text-light); }
-.chip-weather { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 2px; }
-.w-sun { background: var(--sunny); }
-.w-any { background: var(--cloudy); }
-.e-easy { color: var(--easy); }
-.e-medium { color: var(--medium); }
-.e-hard { color: var(--hard); }
-
-/* 日历卡片 */
 .day-card {
   background: var(--card);
   border-radius: 16px;
@@ -213,18 +133,21 @@ body {
 .tag-flex { background: #f3e5f5; color: #7b1fa2; }
 
 .module-select {
-  padding: 8px 14px;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
   border: 2px solid var(--border);
   background: var(--bg);
   font-family: inherit;
   font-size: .9rem;
   cursor: pointer;
-  min-width: 220px;
+  min-width: 320px;
   color: var(--text);
 }
 .module-select:focus { outline: 2px solid var(--accent); border-color: transparent; }
-.module-select option { padding: 8px; }
+.module-select option { padding: 10px; }
+.opt-group { font-weight: 600; color: var(--text); background: #faf9f7; }
+.opt-weather { color: var(--sunny); font-size: .8rem; }
+.opt-hard { color: var(--hard); font-size: .8rem; }
 
 .day-body { padding: 20px 24px; }
 .activity {
@@ -333,47 +256,15 @@ body {
 .toast.show { transform: translateX(-50%) translateY(0); }
 .footer { text-align: center; padding: 40px 20px; color: var(--text-light); font-size: .85rem; }
 
-.intro-card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-.intro-card h2 { font-family: 'Noto Serif SC', serif; font-size: 1.1rem; margin-bottom: 12px; color: var(--text); }
-.intro-card p { font-size: .9rem; color: var(--text-light); line-height: 1.8; }
-.intro-card ul { margin-top: 8px; padding-left: 20px; font-size: .9rem; color: var(--text-light); }
-.intro-card li { margin-bottom: 4px; }
-.highlight { color: var(--accent); font-weight: 600; }
-
-.edit-hint {
-  position: fixed;
-  bottom: 20px; right: 20px;
-  background: var(--card);
-  padding: 10px 16px;
-  border-radius: 12px;
-  box-shadow: var(--shadow-hover);
-  font-size: .8rem;
-  color: var(--text-light);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 50;
-  border: 1px solid var(--border);
-}
-.edit-hint svg { width: 16px; height: 16px; color: var(--accent); }
-
 @media(max-width:600px) {
   .header h1 { font-size: 1.7rem; }
   .day-date { font-size: 1.2rem; }
   .container { padding: 0 12px; margin-top: -24px; }
-  .day-header { padding: 16px 18px 12px; }
+  .day-header { padding: 16px 18px 12px; flex-direction: column; gap: 10px; }
   .day-body { padding: 16px 18px; }
   .trip-meta { gap: 12px; }
   .share-bar { padding: 10px 16px; }
-  .state-row { flex-direction: column; gap: 12px; }
-  .module-grid { grid-template-columns: 1fr; }
+  .module-select { min-width: 100%; width: 100%; }
 }
 </style>
 </head>
@@ -394,7 +285,7 @@ body {
 <div class="header">
   <div class="header-content">
     <h1>伦敦之旅</h1>
-    <div class="subtitle">两个女生的英伦冒险 · 模块化行程规划器</div>
+    <div class="subtitle">September 26 - October 5, 2026</div>
     <div class="trip-meta">
       <span>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg> 9.26 - 10.5
@@ -412,55 +303,21 @@ body {
 <div class="container">
   <div class="intro-card">
     <h2>使用说明</h2>
-    <p>1. 每天睡醒后，选择<strong>天气</strong>和<strong>体力状态</strong></p>
-    <p>2. 系统会<strong>高亮推荐</strong>合适的模块，点击模块或下拉菜单安排当天行程</p>
-    <p>3. 已使用的模块会自动标记，避免重复安排</p>
-    <p>4. <strong>哈利波特工厂</strong>和其他模块完全并列，你可以安排在任意一天（注意门票预约时间）</p>
-    <p style="margin-top:8px"><strong style="color:var(--accent)">点击任意文字即可编辑</strong>，修改后点击右上角「分享行程」生成链接</p>
+    <p>每天从下拉菜单中<strong>自主选择</strong>行程模块。每个选项标注了<strong>天气要求</strong>和<strong>体力要求</strong>，请根据当天的实际情况灵活安排：</p>
+    <ul>
+      <li><span class="highlight">优先晴天</span>：白崖、剑桥 — 晴天体验最佳</li>
+      <li><span class="highlight">体力要求高</span>：白崖、约克 — 较累，建议体力充沛时去</li>
+      <li><span class="highlight">任意天气/体力</span>：比斯特、大英博物馆+音乐剧、哈利波特工厂、伦敦市内 — 最灵活</li>
+      <li><span class="highlight">诺丁山市集</span>：仅周日（10.4）开放，注意安排</li>
+    </ul>
+    <p style="margin-top:8px"><strong style="color:var(--accent)">点击任意文字即可编辑</strong>，修改后点击右上角「分享行程」生成链接发给同伴。</p>
   </div>
 
-  <!-- 状态选择面板 -->
-  <div class="state-panel">
-    <h2>今日状态</h2>
-    <div class="state-row">
-      <div class="state-group">
-        <div class="state-label">天气</div>
-        <div class="state-options">
-          <button class="state-btn" id="w-sunny" onclick="setWeather('sunny')">☀️ 晴天</button>
-          <button class="state-btn" id="w-cloudy" onclick="setWeather('cloudy')">☁️ 多云</button>
-          <button class="state-btn" id="w-rainy" onclick="setWeather('rainy')">🌧️ 雨天</button>
-        </div>
-      </div>
-      <div class="state-group">
-        <div class="state-label">体力</div>
-        <div class="state-options">
-          <button class="state-btn" id="e-easy" onclick="setEnergy('easy')">😌 轻松</button>
-          <button class="state-btn" id="e-medium" onclick="setEnergy('medium')">💪 中等</button>
-          <button class="state-btn" id="e-hard" onclick="setEnergy('hard')">🔥 充沛</button>
-        </div>
-      </div>
-    </div>
-    <div class="recommendation" id="recommendation" style="display:none;">
-      <strong>推荐：</strong><span id="rec-text"></span>
-    </div>
-  </div>
-
-  <!-- 模块库 -->
-  <div class="module-library">
-    <h2>模块库 <span style="font-size:.8rem;color:var(--text-light);font-weight:400;">（绿色=轻松 橙色=中等 红色=较累 ☀️=晴天优先）</span></h2>
-    <div class="module-grid" id="moduleGrid"></div>
-  </div>
-
-  <!-- 日历 -->
   <div id="itinerary"></div>
 
   <div class="footer">
     <p>点击任意文字即可编辑行程内容 · 点击右上角「重置」恢复默认</p>
   </div>
-</div>
-
-<div class="edit-hint" id="editHint">
-  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> 点击文字即可编辑
 </div>
 
 <div class="modal-overlay" id="shareModal">
@@ -480,27 +337,11 @@ body {
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
-// ========== 模块定义（哈利波特工厂完全并列） ==========
+// ========== 10个可选模块（去掉抵达和离别） ==========
 const modules = {
-  arrive: {
-    id: 'arrive', title: '抵达适应日', emoji: '🛬',
-    energy: 'easy', weather: 'any', priority: 'fixed',
-    desc: '自然历史博物馆+海德公园，倒时差',
-    tag: '轻松日', tagClass: 'tag-easy',
-    activities: [
-      { time: '10:00', content: '自然醒，酒店附近早餐', note: '' },
-      { time: '11:00', content: '自然历史博物馆（Natural History Museum）', note: '免费，酒店隔壁步行5分钟，看蓝鲸骨架' },
-      { time: '13:30', content: '午餐正餐：The Ivy Kensington Brasserie', note: 'Gloucester Road，现代英式，人均 £35-50' },
-      { time: '15:00', content: '海德公园散步、喂天鹅', note: '看戴安娜纪念喷泉' },
-      { time: '18:00', content: '回酒店休整', note: '' },
-      { time: '19:30', content: '晚餐正餐：Daphne\'s', note: '南肯辛顿，意大利菜，氛围浪漫，人均 £40-60' }
-    ],
-    tips: '第一天不用早起，适应时差为主。酒店位置极好，步行可达多个景点。'
-  },
   hp: {
     id: 'hp', title: '哈利波特工厂日', emoji: '🧙',
-    energy: 'medium', weather: 'any', priority: 'high',
-    desc: '需提前预约门票时间（14:30或15:00场）',
+    energy: 'medium', weather: 'any',
     tag: '魔法日', tagClass: 'tag-city',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
@@ -513,12 +354,11 @@ const modules = {
       { time: '18:30', content: '返回伦敦', note: '' },
       { time: '19:30', content: '晚餐正餐：Dishoom 或 Flat Iron', note: 'Kensington店印度菜或Soho店牛排，人均£20-35' }
     ],
-    tips: '门票必须提前在官网预约！有14:30和15:00两个场次可选，建议选下午场不用早起。黄油啤酒必喝！'
+    tips: '门票必须提前在官网预约！建议选下午场不用早起。黄油啤酒必喝！'
   },
   bicester: {
     id: 'bicester', title: '比斯特购物日', emoji: '🛍️',
-    energy: 'medium', weather: 'any', priority: 'early',
-    desc: '建议早去，买的新衣服后面穿',
+    energy: 'medium', weather: 'any',
     tag: '购物日', tagClass: 'tag-travel',
     activities: [
       { time: '09:00', content: '出门（这一天早起，为了第一批进店）', note: '' },
@@ -531,12 +371,11 @@ const modules = {
       { time: '17:30', content: '回酒店放战利品、休整', note: '' },
       { time: '19:30', content: '晚餐正餐：The Ivy Marylebone Garden', note: 'Marylebone站附近，英式，人均 £35-50' }
     ],
-    tips: '非欧盟居民可退税，购物时带护照，单笔满£30即可，在购物村退税中心办理。越早去越好，避开周末人潮。'
+    tips: '非欧盟居民可退税，购物时带护照，单笔满£30即可。越早去越好，避开周末人潮。'
   },
   museum: {
     id: 'museum', title: '大英博物馆+悲惨世界', emoji: '🎭',
-    energy: 'medium', weather: 'any', priority: 'high',
-    desc: '博物馆白天+音乐剧晚场，周二-周六',
+    energy: 'medium', weather: 'any',
     tag: '文化日', tagClass: 'tag-city',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
@@ -548,12 +387,11 @@ const modules = {
       { time: '19:30', content: '《悲惨世界》音乐剧（Les Misérables）', note: 'Sondheim Theatre，演出约2小时50分钟含中场休息' },
       { time: '22:30', content: '结束，地铁回酒店', note: '' }
     ],
-    tips: '大英博物馆周一闭馆，周二-周六开放10:00-17:00，需提前官网预约免费门票。音乐剧周二-周六每晚19:30。建议博物馆和音乐剧放在同一天。'
+    tips: '大英博物馆周一闭馆，周二-周六开放10:00-17:00，需提前官网预约免费门票。音乐剧周二-周六每晚19:30。'
   },
   cambridge: {
     id: 'cambridge', title: '剑桥日', emoji: '🚣',
     energy: 'medium', weather: 'sunny',
-    desc: '撑船+学院，1小时火车，晴天最佳',
     tag: '旅行日', tagClass: 'tag-travel',
     activities: [
       { time: '09:30', content: 'King\'s Cross 火车去剑桥', note: '约1小时' },
@@ -569,7 +407,6 @@ const modules = {
   whitecliff: {
     id: 'whitecliff', title: '白崖日', emoji: '⛰️',
     energy: 'hard', weather: 'sunny',
-    desc: '海岸线徒步，必须晴天，较累',
     tag: '旅行日', tagClass: 'tag-travel',
     activities: [
       { time: '09:30', content: '地铁到 Victoria，火车到 Eastbourne', note: '约1.5小时' },
@@ -585,7 +422,6 @@ const modules = {
   york: {
     id: 'york', title: '约克日', emoji: '🏰',
     energy: 'hard', weather: 'any',
-    desc: '大教堂+肉铺街，近2小时火车，最累',
     tag: '旅行日', tagClass: 'tag-travel',
     activities: [
       { time: '08:00', content: 'King\'s Cross 火车去约克', note: 'LNER直达，约1小时46分' },
@@ -601,7 +437,6 @@ const modules = {
   oxford: {
     id: 'oxford', title: '牛津日', emoji: '📚',
     energy: 'medium', weather: 'any',
-    desc: '学院+图书馆，和工厂有些重复',
     tag: '旅行日', tagClass: 'tag-travel',
     activities: [
       { time: '09:30', content: 'Paddington 火车去牛津', note: '约1小时' },
@@ -617,7 +452,6 @@ const modules = {
   londonA: {
     id: 'londonA', title: '伦敦休闲A', emoji: '🏛️',
     energy: 'easy', weather: 'any',
-    desc: 'V&A/自然史/海德公园，酒店附近',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
@@ -632,7 +466,6 @@ const modules = {
   londonB: {
     id: 'londonB', title: '伦敦休闲B', emoji: '🎨',
     energy: 'easy', weather: 'any',
-    desc: '国家美术馆/Covent Garden/Soho',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
@@ -647,7 +480,6 @@ const modules = {
   londonC: {
     id: 'londonC', title: '伦敦休闲C', emoji: '🌉',
     energy: 'easy', weather: 'any',
-    desc: 'Tate Modern/千禧桥/Borough Market',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
@@ -662,7 +494,6 @@ const modules = {
   notting: {
     id: 'notting', title: '诺丁山市集日', emoji: '🌈',
     energy: 'easy', weather: 'any',
-    desc: '仅周日开放！彩色房子+复古市集',
     tag: '轻松日', tagClass: 'tag-easy',
     activities: [
       { time: '10:00', content: '自然醒', note: '' },
@@ -673,146 +504,71 @@ const modules = {
       { time: '19:30', content: '晚餐正餐：The Ivy Kensington', note: '人均£35-50' }
     ],
     tips: 'Portobello Road Market 只有周日最热闹！如果10.4（周日）还没安排，优先考虑这个。'
-  },
-  depart: {
-    id: 'depart', title: '离别日', emoji: '✈️',
-    energy: 'easy', weather: 'any', priority: 'fixed',
-    desc: '哈罗德补货→机场',
-    tag: '离别日', tagClass: 'tag-depart',
-    activities: [
-      { time: '10:00', content: '自然醒，退房存行李', note: '' },
-      { time: '10:30', content: '最后补货或酒店附近买伴手礼', note: '' },
-      { time: '12:30', content: '午餐正餐（最后一顿）：Daphne\'s 或 The Ivy Kensington', note: '' },
-      { time: '14:30', content: '取行李，Piccadilly 线直达希思罗机场', note: '约50分钟' },
-      { time: '16:00', content: '到达机场，退税、值机、逛免税店', note: '' },
-      { time: '22:00', content: '航班起飞，返回上海', note: '✈️' }
-    ],
-    tips: 'Oyster Card 或 Contactless 支付很方便，地铁公交都能用，每天封顶£8.5。'
   }
 };
 
-// ========== 日期配置 ==========
+// ========== 8天日期配置（9.28-10.5） ==========
 const dayConfig = [
-  { date: '9月28日', weekday: '周一', fixed: 'arrive', editable: false },
-  { date: '9月29日', weekday: '周二', fixed: null, editable: true },
-  { date: '9月30日', weekday: '周三', fixed: null, editable: true },
-  { date: '10月1日', weekday: '周四', fixed: null, editable: true },
-  { date: '10月2日', weekday: '周五', fixed: null, editable: true },
-  { date: '10月3日', weekday: '周六', fixed: null, editable: true },
-  { date: '10月4日', weekday: '周日', fixed: null, editable: true, sundayOnly: ['notting'] },
-  { date: '10月5日', weekday: '周一', fixed: 'depart', editable: false }
+  { date: '9月28日', weekday: '周一', fixed: false, editable: true },
+  { date: '9月29日', weekday: '周二', fixed: false, editable: true },
+  { date: '9月30日', weekday: '周三', fixed: false, editable: true },
+  { date: '10月1日', weekday: '周四', fixed: false, editable: true },
+  { date: '10月2日', weekday: '周五', fixed: false, editable: true },
+  { date: '10月3日', weekday: '周六', fixed: false, editable: true },
+  { date: '10月4日', weekday: '周日', fixed: false, editable: true },
+  { date: '10月5日', weekday: '周一', fixed: false, editable: true }
 ];
 
-// ========== 状态 ==========
-let currentWeather = null;
-let currentEnergy = null;
 let dayAssignments = {}; // dayIndex -> moduleId
 
-// ========== 推荐逻辑 ==========
-function getRecommendations() {
-  if (!currentWeather || !currentEnergy) return [];
-  const recs = [];
-  const w = currentWeather, e = currentEnergy;
+// ========== 下拉选项构建 ==========
+function buildOptions(dayIdx) {
+  const used = Object.values(dayAssignments);
+  const current = dayAssignments[dayIdx];
   
-  // 白崖：必须晴天，任何体力
-  if (w === 'sunny') recs.push('whitecliff');
-  // 剑桥：晴天最佳，中等以上体力
-  if (w === 'sunny' && e !== 'easy') recs.push('cambridge');
-  if (w === 'cloudy' && e === 'hard') recs.push('cambridge');
-  // 约克：体力充沛，任意天气
-  if (e === 'hard') recs.push('york');
-  // 比斯特：中等体力，任意天气（早去优先）
-  if (e !== 'easy') recs.push('bicester');
-  // 大英+音乐剧：中等体力，任意天气
-  if (e === 'medium' || e === 'hard') recs.push('museum');
-  // 哈利波特工厂：中等体力，任意天气
-  if (e === 'medium' || e === 'hard') recs.push('hp');
-  // 牛津：中等体力，任意天气（优先级低）
-  if (e === 'medium' && w !== 'rainy') recs.push('oxford');
-  // 伦敦休闲：轻松或雨天
-  if (e === 'easy' || w === 'rainy') {
-    recs.push('londonA', 'londonB', 'londonC');
+  let html = '<option value="">-- 选择今日行程 --</option>';
+  
+  // 分组：优先晴天
+  html += '<optgroup label="优先晴天">';
+  const sunnyGroup = ['whitecliff', 'cambridge'];
+  sunnyGroup.forEach(id => {
+    const m = modules[id];
+    const isUsed = used.includes(id) && current !== id;
+    const weatherTag = m.weather === 'sunny' ? '优先晴天' : '';
+    const energyTag = m.energy === 'hard' ? '体力要求高' : m.energy === 'medium' ? '中等体力' : '轻松';
+    html += `<option value="${id}" ${current === id ? 'selected' : ''} ${isUsed ? 'disabled' : ''}>${m.emoji} ${m.title} — ${weatherTag} ${energyTag}</option>`;
+  });
+  html += '</optgroup>';
+  
+  // 分组：任意天气
+  html += '<optgroup label="任意天气">';
+  const anyGroup = ['hp', 'bicester', 'museum', 'york', 'oxford', 'londonA', 'londonB', 'londonC'];
+  anyGroup.forEach(id => {
+    const m = modules[id];
+    const isUsed = used.includes(id) && current !== id;
+    const energyTag = m.energy === 'hard' ? '体力要求高' : m.energy === 'medium' ? '中等体力' : '轻松';
+    html += `<option value="${id}" ${current === id ? 'selected' : ''} ${isUsed ? 'disabled' : ''}>${m.emoji} ${m.title} — ${energyTag}</option>`;
+  });
+  html += '</optgroup>';
+  
+  // 分组：仅周日
+  if (dayIdx === 6) {
+    html += '<optgroup label="仅周日">';
+    const m = modules['notting'];
+    const isUsed = used.includes('notting') && current !== 'notting';
+    html += `<option value="notting" ${current === 'notting' ? 'selected' : ''} ${isUsed ? 'disabled' : ''}>${m.emoji} ${m.title} — 仅周日开放</option>`;
+    html += '</optgroup>';
   }
   
-  return [...new Set(recs)];
-}
-
-function getRecText() {
-  const recs = getRecommendations();
-  if (recs.length === 0) return '请选择天气和体力状态';
-  const names = recs.map(id => modules[id].emoji + modules[id].title).slice(0, 5);
-  return '今天适合：' + names.join('、');
+  return html;
 }
 
 // ========== 渲染 ==========
-function renderModuleGrid() {
-  const grid = document.getElementById('moduleGrid');
-  const used = Object.values(dayAssignments);
-  const recs = getRecommendations();
-  
-  grid.innerHTML = Object.values(modules).map(m => {
-    const isUsed = used.includes(m.id);
-    const isRec = recs.includes(m.id) && !isUsed;
-    const wDot = m.weather === 'sunny' ? '<span class="chip-weather w-sun"></span>' : '<span class="chip-weather w-any"></span>';
-    const eColor = m.energy === 'easy' ? 'e-easy' : m.energy === 'medium' ? 'e-medium' : 'e-hard';
-    const eText = m.energy === 'easy' ? '轻松' : m.energy === 'medium' ? '中等' : '较累';
-    const wText = m.weather === 'sunny' ? '晴天优先' : '任意天气';
-    
-    return `
-      <button class="module-chip ${isRec ? 'recommended' : ''} ${isUsed ? 'used' : ''}" 
-        onclick="${isUsed ? '' : `assignModule('${m.id}')`}" 
-        ${isUsed ? 'disabled' : ''}>
-        <div class="chip-title">${m.emoji} ${m.title}</div>
-        <div class="chip-meta ${eColor}">${wDot} ${eText} · ${wText}</div>
-      </button>
-    `;
-  }).join('');
-}
-
 function renderItinerary() {
   const el = document.getElementById('itinerary');
   el.innerHTML = dayConfig.map((day, i) => {
-    let assignedId = dayAssignments[i];
-    if (day.fixed) assignedId = day.fixed;
-    
+    const assignedId = dayAssignments[i];
     const mod = assignedId ? modules[assignedId] : null;
-    
-    // 构建下拉选项
-    let options = '<option value="">-- 选择今天的模块 --</option>';
-    
-    if (day.fixed) {
-      // 固定日无下拉
-    } else {
-      const opts = [];
-      if (day.sundayOnly) {
-        opts.push({ id: 'notting', label: '🌈 诺丁山市集日（仅周日）' });
-      }
-      opts.push(
-        { id: 'hp', label: '🧙 哈利波特工厂日' },
-        { id: 'bicester', label: '🛍️ 比斯特购物日' },
-        { id: 'museum', label: '🎭 大英博物馆+悲惨世界' },
-        { id: 'cambridge', label: '🚣 剑桥日' },
-        { id: 'whitecliff', label: '⛰️ 白崖日' },
-        { id: 'york', label: '🏰 约克日' },
-        { id: 'oxford', label: '📚 牛津日' },
-        { id: 'londonA', label: '🏛️ 伦敦休闲A（南肯辛顿）' },
-        { id: 'londonB', label: '🎨 伦敦休闲B（市中心）' },
-        { id: 'londonC', label: '🌉 伦敦休闲C（泰晤士河）' }
-      );
-      
-      // 过滤已使用的（除了自己）
-      const used = Object.values(dayAssignments);
-      opts.forEach(o => {
-        if (!used.includes(o.id) || dayAssignments[i] === o.id) {
-          options += `<option value="${o.id}" ${dayAssignments[i] === o.id ? 'selected' : ''}>${o.label}</option>`;
-        }
-      });
-    }
-    
-    const selectHtml = day.editable ? 
-      `<select class="module-select" onchange="selectDayModule(${i}, this.value)">
-        ${options}
-      </select>` : '';
     
     return `
       <div class="day-card" data-idx="${i}">
@@ -822,7 +578,9 @@ function renderItinerary() {
             <div class="day-weekday">${day.weekday}</div>
             ${mod ? `<div class="day-tag ${mod.tagClass}">${mod.tag}</div>` : ''}
           </div>
-          ${selectHtml}
+          <select class="module-select" onchange="selectDayModule(${i}, this.value)">
+            ${buildOptions(i)}
+          </select>
         </div>
         ${mod ? `
         <div class="day-body">
@@ -840,60 +598,21 @@ function renderItinerary() {
             </div>
           ` : ''}
         </div>
-        ` : '<div class="day-body" style="color:var(--text-light);font-size:.9rem;padding:30px;text-align:center;">👆 从上方模块库或下拉菜单选择今天的行程</div>'}
+        ` : '<div class="day-body" style="color:var(--text-light);font-size:.9rem;padding:30px;text-align:center;">👆 请从上方下拉菜单选择今日行程</div>'}
       </div>
     `;
   }).join('');
 }
 
 // ========== 交互 ==========
-function setWeather(w) {
-  currentWeather = w;
-  document.querySelectorAll('.state-btn[id^="w-"]').forEach(b => b.classList.remove('active'));
-  document.getElementById('w-' + w).classList.add('active');
-  updateRec();
-  renderModuleGrid();
-}
-
-function setEnergy(e) {
-  currentEnergy = e;
-  document.querySelectorAll('.state-btn[id^="e-"]').forEach(b => b.classList.remove('active'));
-  document.getElementById('e-' + e).classList.add('active');
-  updateRec();
-  renderModuleGrid();
-}
-
-function updateRec() {
-  const rec = document.getElementById('recommendation');
-  const text = document.getElementById('rec-text');
-  if (currentWeather && currentEnergy) {
-    rec.style.display = 'block';
-    text.textContent = getRecText();
-  }
-}
-
 function selectDayModule(dayIdx, moduleId) {
   if (!moduleId) {
     delete dayAssignments[dayIdx];
-    renderAll();
-    return;
+  } else {
+    dayAssignments[dayIdx] = moduleId;
   }
-  dayAssignments[dayIdx] = moduleId;
-  renderAll();
-}
-
-function assignModule(moduleId) {
-  // 找到第一个空着的弹性日
-  for (let i = 0; i < dayConfig.length; i++) {
-    if (!dayConfig[i].editable) continue;
-    if (dayAssignments[i]) continue;
-    // 诺丁山只能周日
-    if (moduleId === 'notting' && i !== 6) continue;
-    dayAssignments[i] = moduleId;
-    renderAll();
-    return;
-  }
-  alert('没有空着的弹性日了，请先清空某一天再安排。');
+  renderItinerary();
+  encodeUrl();
 }
 
 function updateAct(moduleId, actIdx, field, el) {
@@ -910,20 +629,10 @@ function updateTips(moduleId, el) {
   }
 }
 
-function renderAll() {
-  renderModuleGrid();
-  renderItinerary();
-  encodeUrl();
-}
-
 // ========== URL编码 ==========
 function encodeUrl() {
   try {
-    const payload = {
-      weather: currentWeather,
-      energy: currentEnergy,
-      assignments: dayAssignments
-    };
+    const payload = { assignments: dayAssignments };
     const json = JSON.stringify(payload);
     const encoded = btoa(encodeURIComponent(json));
     const url = new URL(window.location.href);
@@ -939,13 +648,7 @@ function decodeUrl() {
     if (!plan) return false;
     const json = decodeURIComponent(atob(plan));
     const payload = JSON.parse(json);
-    if (payload.weather) currentWeather = payload.weather;
-    if (payload.energy) currentEnergy = payload.energy;
     if (payload.assignments) dayAssignments = payload.assignments;
-    
-    if (currentWeather) document.getElementById('w-' + currentWeather).classList.add('active');
-    if (currentEnergy) document.getElementById('e-' + currentEnergy).classList.add('active');
-    updateRec();
     return true;
   } catch (e) { console.error(e); }
   return false;
@@ -981,16 +684,12 @@ function showToast(msg) {
 }
 
 function resetAll() {
-  if (!confirm('确定要重置所有选择吗？包括天气、体力和每日安排将全部清空。')) return;
-  currentWeather = null;
-  currentEnergy = null;
+  if (!confirm('确定要重置所有选择吗？每日安排将全部清空。')) return;
   dayAssignments = {};
-  document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('recommendation').style.display = 'none';
   const url = new URL(window.location.href);
   url.searchParams.delete('plan');
   window.history.replaceState({}, '', url);
-  renderAll();
+  renderItinerary();
   showToast('已重置');
 }
 
@@ -1005,18 +704,7 @@ window.addEventListener('click', e => {
 });
 
 decodeUrl();
-renderAll();
-
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    const hint = document.getElementById('editHint');
-    if (hint) {
-      hint.style.opacity = '0';
-      hint.style.transition = 'opacity 1s';
-      setTimeout(() => hint.remove(), 1000);
-    }
-  }, 5000);
-});
+renderItinerary();
 </script>
 
 </body>
