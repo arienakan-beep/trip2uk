@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>伦敦之旅行程规划</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f3ef;
+  --card: #ffffff;
+  --accent: #c9a87c;
+  --accent-light: #e8dcc8;
+  --text: #2c2c2c;
+  --text-light: #6b6b6b;
+  --border: #e8e4de;
+  --sunny: #f4a261;
+  --cloudy: #8ecae6;
+  --rainy: #6c757d;
+  --edit-bg: #fff8e1;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 100%);
+  color: #fff;
+  padding: 48px 24px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23ffffff10'/%3E%3Ccircle cx='80' cy='40' r='1.5' fill='%23ffffff08'/%3E%3Ccircle cx='40' cy='70' r='1' fill='%23ffffff12'/%3E%3Ccircle cx='70' cy='80' r='2.5' fill='%23ffffff06'/%3E%3C/svg%3E");
+  opacity: .6;
+}
+.header-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+.header .subtitle {
+  font-size: 1rem;
+  opacity: .8;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+.trip-meta {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.trip-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .9rem;
+  opacity: .9;
+}
+.trip-meta svg {
+  width: 16px;
+  height: 16px;
+  opacity: .7;
+}
+.share-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  transform: translateY(-100%);
+  transition: transform .3s ease;
+}
+.share-bar.visible { transform: translateY(0); }
+.share-bar .left { font-weight: 600; font-size: .95rem; color: var(--text); }
+.share-bar .right { display: flex; gap: 10px; }
+.btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  font-size: .85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #b8986a; transform: translateY(-1px); }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn svg { width: 14px; height: 14px; }
+.container {
+  max-width: 800px;
+  margin: -32px auto 48px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+.day-card {
+  background: var(--card);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow .3s, transform .3s;
+  border: 1px solid var(--border);
+}
+.day-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.day-header {
+  padding: 20px 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(to right, #faf9f7, transparent);
+}
+.day-info { display: flex; align-items: center; gap: 14px; }
+.day-date {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.day-weekday {
+  font-size: .85rem;
+  color: var(--text-light);
+  background: var(--bg);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+.day-tag {
+  font-size: .75rem;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.tag-easy { background: #e8f5e9; color: #2e7d32; }
+.tag-travel { background: #e3f2fd; color: #1565c0; }
+.tag-city { background: #fff3e0; color: #e65100; }
+.tag-depart { background: #fce4ec; color: #c2185b; }
+.weather-ctrl { display: flex; gap: 6px; align-items: center; }
+.weather-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  background: var(--bg);
+}
+.weather-btn:hover { transform: scale(1.1); }
+.weather-btn.active { border-color: var(--accent); }
+.weather-btn svg { width: 16px; height: 16px; }
+.w-sunny { color: var(--sunny); }
+.w-cloudy { color: var(--cloudy); }
+.w-rainy { color: var(--rainy); }
+.day-body { padding: 20px 24px; }
+.activity {
+  margin-bottom: 16px;
+  padding-left: 20px;
+  position: relative;
+}
+.activity::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  border: 2px solid var(--accent);
+}
+.activity:last-child { margin-bottom: 0; }
+.act-time {
+  font-size: .8rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-family: 'Noto Serif SC', serif;
+}
+.act-content {
+  font-size: .95rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+.act-note {
+  font-size: .85rem;
+  color: var(--text-light);
+  margin-top: 4px;
+  font-style: italic;
+}
+.restaurant {
+  background: linear-gradient(135deg, #faf7f2 0%, #f5f0e8 100%);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  border-left: 3px solid var(--accent);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.restaurant svg {
+  width: 18px; height: 18px;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.restaurant-info { flex: 1; }
+.restaurant-label {
+  font-size: .75rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.restaurant-name { font-weight: 600; font-size: .9rem; color: var(--text); }
+.restaurant-detail { font-size: .85rem; color: var(--text-light); margin-top: 2px; }
+.tips {
+  background: #f0f7ff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-left: 3px solid #8ecae6;
+}
+.tips svg {
+  width: 18px; height: 18px;
+  color: #8ecae6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.tips-content { font-size: .9rem; color: #1565c0; line-height: 1.6; }
+[contenteditable] { cursor: text; }
+[contenteditable]:hover { background: var(--edit-bg); }
+[contenteditable]:focus { background: #fff; outline: 2px solid var(--accent); }
+[contenteditable]:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  transform: scale(.95);
+  transition: transform .3s;
+}
+.modal-overlay.active .modal { transform: scale(1); }
+.modal h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+.modal p { color: var(--text-light); font-size: .9rem; margin-bottom: 20px; }
+.modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: .9rem;
+  font-family: inherit;
+  margin-bottom: 16px;
+  background: var(--bg);
+}
+.modal-input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.qr-code {
+  width: 200px; height: 200px;
+  margin: 16px auto;
+  background: var(--bg);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+.qr-code svg { width: 180px; height: 180px; }
+.toast {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #2c2c2c;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-size: .9rem;
+  z-index: 300;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.footer { text-align: center; padding: 40px 20px; color: var(--text-light); font-size: .85rem; }
+.footer a { color: var(--accent); text-decoration: none; }
+.intro-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.intro-card h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.intro-card p { font-size: .9rem; color: var(--text-light); line-height: 1.8; }
+.intro-card ul { margin-top: 8px; padding-left: 20px; font-size: .9rem; color: var(--text-light); }
+.intro-card li { margin-bottom: 4px; }
+.highlight { color: var(--accent); font-weight: 600; }
+.edit-hint {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: var(--card);
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  font-size: .8rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 50;
+  border: 1px solid var(--border);
+}
+.edit-hint svg { width: 16px; height: 16px; color: var(--accent); }
+@media(max-width:600px) {
+  .header h1 { font-size: 1.7rem; }
+  .day-date { font-size: 1.2rem; }
+  .container { padding: 0 12px; margin-top: -24px; }
+  .day-header { padding: 16px 18px 12px; }
+  .day-body { padding: 16px 18px; }
+  .trip-meta { gap: 12px; }
+  .share-bar { padding: 10px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="share-bar" id="shareBar">
+  <div class="left">伦敦之旅行程规划</div>
+  <div class="right">
+    <button class="btn btn-secondary" onclick="resetData()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 重置
+    </button>
+    <button class="btn btn-primary" onclick="sharePlan()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg> 分享行程
+    </button>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-content">
+    <h1>伦敦之旅</h1>
+    <div class="subtitle">两个女生的英伦冒险</div>
+    <div class="trip-meta">
+      <span>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg> 9.26 - 10.5
+      </span>
+      <span>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Citadines South Kensington
+      </span>
+      <span>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> 2人
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="intro-card">
+    <h2>行程说明</h2>
+    <p>这是一份为两位女生定制的伦敦行程规划，主打<span class="highlight">轻松不赶</span>、<span class="highlight">每天一顿正餐</span>。行程中：</p>
+    <ul>
+      <li><span class="highlight">比斯特购物</span>安排在 9.30，买的新衣服后面几天都能穿</li>
+      <li><span class="highlight">哈利波特工厂</span>安排在 9.29 下午场，不用早起</li>
+      <li><span class="highlight">《悲惨世界》</span>安排在 10.2 晚场，和大英博物馆同一天</li>
+      <li>10.1 和 10.3 为<span class="highlight">弹性日</span>，可根据天气和体力灵活调整</li>
+      <li>早起只有<span class="highlight">9.30 一天</span>，其余全部自然醒</li>
+    </ul>
+    <p style="margin-top:12px"><strong style="color:var(--accent)">点击任意文字即可编辑</strong>，修改后的内容可以通过右上角「分享行程」生成链接发给朋友。</p>
+  </div>
+
+  <div id="itinerary"></div>
+
+  <div class="footer">
+    <p>点击任意文字即可编辑行程内容</p>
+    <p style="margin-top:8px">分享功能会将你的修改编码到链接中，朋友打开即可看到相同内容</p>
+  </div>
+</div>
+
+<div class="edit-hint" id="editHint">
+  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> 点击文字即可编辑
+</div>
+
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <h3>分享行程</h3>
+    <p>复制下方链接发送给朋友，或扫描二维码打开</p>
+    <input class="modal-input" id="shareUrl" readonly onclick="this.select()">
+    <div class="qr-code" id="qrCode"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-primary" onclick="copyLink()">复制链接</button>
+      <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">已复制到剪贴板</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+const defaultData = [
+  {
+    date: '9月28日', weekday: '周一', tag: '轻松日', tagClass: 'tag-easy', weather: 'sunny',
+    activities: [
+      { time: '10:00', content: '自然醒，酒店附近早餐', note: '' },
+      { time: '11:00', content: '自然历史博物馆（Natural History Museum）', note: '免费，酒店隔壁步行5分钟，看蓝鲸骨架' },
+      { time: '13:30', content: '午餐正餐：The Ivy Kensington Brasserie', note: 'Gloucester Road，现代英式，人均 £35-50' },
+      { time: '15:00', content: '海德公园散步、喂天鹅', note: '看戴安娜纪念喷泉' },
+      { time: '18:00', content: '回酒店休整', note: '' },
+      { time: '19:30', content: '晚餐正餐：Daphne\'s', note: '南肯辛顿，意大利菜，氛围浪漫，人均 £40-60' }
+    ],
+    tips: '第一天不用早起，适应时差为主。酒店位置极好，步行可达多个景点。'
+  },
+  {
+    date: '9月29日', weekday: '周二', tag: '魔法日', tagClass: 'tag-city', weather: 'sunny',
+    activities: [
+      { time: '10:00', content: '自然醒', note: '' },
+      { time: '11:00', content: 'V&A博物馆（Victoria and Albert Museum）', note: '免费，酒店隔壁步行3分钟，珠宝/时装馆很适合女生' },
+      { time: '13:00', content: '午餐正餐：Dishoom', note: 'Kensington分店，印度菜，人气很高，人均 £25-35' },
+      { time: '14:00', content: '地铁 Piccadilly 线到 Euston 站', note: '约20分钟' },
+      { time: '14:20', content: '火车到 Watford Junction', note: '约20分钟' },
+      { time: '14:45', content: '片场穿梭巴士到哈利波特工厂', note: '约15分钟，需出示门票' },
+      { time: '15:00', content: '哈利波特工厂（Warner Bros. Studio Tour）', note: '按预约时间入场，霍格沃茨大厅、对角巷、禁林、9¾站台，必喝黄油啤酒！' },
+      { time: '16:00', content: '下午茶：Backlot Café', note: '工厂内，黄油啤酒+汉堡，人均 £15-25' },
+      { time: '19:00', content: '返回伦敦', note: '' },
+      { time: '20:30', content: '晚餐正餐：Flat Iron', note: '网红牛排，Soho店，人均 £20-25，不用预订' }
+    ],
+    tips: '下午场好处：不用早起，且人可能比上午少。黄油啤酒必喝！'
+  },
+  {
+    date: '9月30日', weekday: '周三', tag: '购物日', tagClass: 'tag-travel', weather: 'cloudy',
+    activities: [
+      { time: '09:00', content: '出门（这一天早起，为了第一批进店）', note: '' },
+      { time: '09:20', content: '地铁到 Marylebone 站', note: '' },
+      { time: '09:40', content: '火车直达 Bicester Village', note: '约45分钟' },
+      { time: '10:30', content: '到达！直冲游客中心领9折卡 + 退税单', note: '' },
+      { time: '10:30', content: '全天购物', note: 'Burberry、Gucci、Max Mara、Prada，慢慢试，新衣服从明天就能穿！' },
+      { time: '13:00', content: '午餐正餐：Café Wolseley', note: '比斯特内，英式，人均 £25-35' },
+      { time: '16:00', content: '火车返回 London Marylebone', note: '' },
+      { time: '17:30', content: '回酒店放战利品、休整', note: '' },
+      { time: '19:30', content: '晚餐正餐：The Ivy Marylebone Garden', note: 'Marylebone站附近，英式，人均 £35-50' }
+    ],
+    tips: '非欧盟居民可退税，购物时带护照，单笔满£30即可，在购物村退税中心办理。'
+  },
+  {
+    date: '10月1日', weekday: '周四', tag: '弹性日', tagClass: 'tag-easy', weather: 'sunny',
+    activities: [
+      { time: '10:00', content: '自然醒', note: '' },
+      { time: '11:00', content: '肯辛顿宫（Kensington Palace）', note: '戴安娜故居，门票约£25，或只逛花园免费' },
+      { time: '13:30', content: '午餐正餐：Borough Market', note: '伦敦桥，各种小吃摊，人均£15-25，吃生蚝、松露意面' },
+      { time: '15:00', content: '泰特现代美术馆（Tate Modern）', note: '免费，看展+顶楼看泰晤士河全景' },
+      { time: '17:00', content: '千禧桥散步到圣保罗大教堂外观', note: '' },
+      { time: '19:30', content: '晚餐正餐：Duck & Rice', note: 'Soho区，中式+英式融合，人均£30-45' }
+    ],
+    tips: '今天完全弹性！如果还有体力，可以去牛津（09:30出门，Paddington火车1小时）；如果累了，就在伦敦吃逛。'
+  },
+  {
+    date: '10月2日', weekday: '周五', tag: '文化日', tagClass: 'tag-city', weather: 'cloudy',
+    activities: [
+      { time: '10:00', content: '自然醒', note: '' },
+      { time: '11:00', content: '大英博物馆（British Museum）', note: '已预约，重点：罗塞塔石碑、帕特农神庙、埃及木乃伊、Lewis棋子' },
+      { time: '13:30', content: '午餐正餐：Great Court Restaurant', note: '博物馆中庭内，现代英式，人均£25-40' },
+      { time: '15:00', content: 'Covent Garden 闲逛', note: '看街头表演，逛小店' },
+      { time: '17:30', content: '回酒店休息、换身衣服', note: '' },
+      { time: '18:30', content: '晚餐正餐：Brasserie Zédel', note: 'Piccadilly Circus附近，法式，距剧院步行5分钟，人均£30-45' },
+      { time: '19:30', content: '《悲惨世界》音乐剧（Les Misérables）', note: 'Sondheim Theatre，51 Shaftesbury Avenue，演出约2小时50分钟含中场休息' },
+      { time: '22:30', content: '结束，地铁回酒店', note: '' }
+    ],
+    tips: '大英博物馆周一闭馆，周二开放10:00-17:00，需提前在官网预约免费门票。音乐剧是伦敦驻演，周二至周六每晚19:30。'
+  },
+  {
+    date: '10月3日', weekday: '周六', tag: '天气机动日', tagClass: 'tag-travel', weather: 'sunny',
+    activities: [
+      { time: '09:30', content: '起床先看天气预报', note: '晴天去剑桥，雨天留在伦敦市内' },
+      { time: '10:00', content: '【晴天方案】King\'s Cross 火车去剑桥', note: '约1小时' },
+      { time: '10:45', content: '到达剑桥，逛国王学院（礼拜堂必看）、三一学院外观', note: '' },
+      { time: '12:30', content: '午餐正餐：The Eagle', note: '历史酒吧，DNA发现地，传统英式，人均£20-30' },
+      { time: '14:00', content: '康河撑船（Punting）', note: '£25/人，45分钟，必体验！' },
+      { time: '15:30', content: 'Fitzbillies 买著名切尔西面包，逛市集', note: '' },
+      { time: '17:00', content: '火车返回伦敦', note: '' },
+      { time: '19:30', content: '晚餐正餐：Dishoom', note: 'Kensington店，印度菜，人均£25-35' }
+    ],
+    tips: '【雨天方案】留在伦敦：国家美术馆 → Borough Market → 西区逛街 → Fortnum & Mason 买伴手礼。剑桥阴雨天也有味道，白崖阴天就真的只是灰石头，所以优先选剑桥。'
+  },
+  {
+    date: '10月4日', weekday: '周日', tag: '补漏/休息', tagClass: 'tag-easy', weather: 'sunny',
+    activities: [
+      { time: '10:00', content: '自然醒', note: '' },
+      { time: '11:00', content: '诺丁山（Notting Hill）', note: 'Portobello Road Market，周日最热闹，复古市集，彩色房子拍照' },
+      { time: '12:30', content: '午餐正餐：The Ivy Chelsea Garden', note: '花园式英式，人均£35-50' },
+      { time: '15:00', content: 'Harrods 哈罗德百货最后补货', note: '或酒店附近买伴手礼' },
+      { time: '19:00', content: '晚餐正餐：Daphne\'s 或 The Ivy Kensington', note: '离别前好好吃一顿' }
+    ],
+    tips: '这天完全自由！如果昨天没去剑桥，今天再看天气决定；如果昨天去了，今天就轻松逛+整理行李。'
+  },
+  {
+    date: '10月5日', weekday: '周一', tag: '离别日', tagClass: 'tag-depart', weather: 'cloudy',
+    activities: [
+      { time: '10:00', content: '自然醒，退房存行李', note: '' },
+      { time: '10:30', content: '最后补货或酒店附近买伴手礼', note: '' },
+      { time: '12:30', content: '午餐正餐（最后一顿）：Daphne\'s 或 The Ivy Kensington', note: '' },
+      { time: '14:30', content: '取行李，Piccadilly 线直达希思罗机场', note: '约50分钟' },
+      { time: '16:00', content: '到达机场，退税、值机、逛免税店', note: '' },
+      { time: '22:00', content: '航班起飞，返回上海', note: '✈️' }
+    ],
+    tips: 'Oyster Card 或 Contactless 支付很方便，地铁公交都能用，每天封顶£8.5。'
+  }
+];
+
+let currentData = JSON.parse(JSON.stringify(defaultData));
+
+function render() {
+  const el = document.getElementById('itinerary');
+  el.innerHTML = currentData.map((day, i) => `
+    <div class="day-card" data-idx="${i}">
+      <div class="day-header">
+        <div class="day-info">
+          <div class="day-date" contenteditable="true" data-placeholder="日期" onblur="updateText(${i}, 'date', this)">${day.date}</div>
+          <div class="day-weekday" contenteditable="true" data-placeholder="星期" onblur="updateText(${i}, 'weekday', this)">${day.weekday}</div>
+          <div class="day-tag ${day.tagClass}" contenteditable="true" data-placeholder="标签" onblur="updateText(${i}, 'tag', this)">${day.tag}</div>
+        </div>
+        <div class="weather-ctrl">
+          <button class="weather-btn ${day.weather === 'sunny' ? 'active' : ''} w-sunny" onclick="setWeather(${i}, 'sunny')" title="晴天">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" x2="12" y1="1" y2="3"/><line x1="12" x2="12" y1="21" y2="23"/><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"/><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"/><line x1="1" x2="3" y1="12" y2="12"/><line x1="21" x2="23" y1="12" y2="12"/><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"/><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"/></svg>
+          </button>
+          <button class="weather-btn ${day.weather === 'cloudy' ? 'active' : ''} w-cloudy" onclick="setWeather(${i}, 'cloudy')" title="多云">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+          </button>
+          <button class="weather-btn ${day.weather === 'rainy' ? 'active' : ''} w-rainy" onclick="setWeather(${i}, 'rainy')" title="雨天">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="16" x2="16" y1="13" y2="21"/><line x1="8" x2="8" y1="13" y2="21"/><line x1="12" x2="12" y1="15" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="day-body">
+        ${day.activities.map((act, j) => `
+          <div class="activity">
+            <div class="act-time" contenteditable="true" data-placeholder="时间" onblur="updateActivity(${i}, ${j}, 'time', this)">${act.time}</div>
+            <div class="act-content" contenteditable="true" data-placeholder="活动内容" onblur="updateActivity(${i}, ${j}, 'content', this)">${act.content}</div>
+            ${act.note ? `<div class="act-note" contenteditable="true" data-placeholder="备注" onblur="updateActivity(${i}, ${j}, 'note', this)">${act.note}</div>` : ''}
+          </div>
+        `).join('')}
+        ${day.tips ? `
+          <div class="tips">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
+            <div class="tips-content" contenteditable="true" data-placeholder="小贴士" onblur="updateTips(${i}, this)">${day.tips}</div>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `).join('') + `
+    <div style="text-align:center;margin-top:24px">
+      <button class="btn btn-secondary" onclick="addDay()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg> 添加一天
+      </button>
+    </div>
+  `;
+}
+
+function updateText(dayIdx, field, el) {
+  currentData[dayIdx][field] = el.innerText.trim();
+  encodeUrl();
+}
+
+function updateActivity(dayIdx, actIdx, field, el) {
+  currentData[dayIdx].activities[actIdx][field] = el.innerText.trim();
+  encodeUrl();
+}
+
+function updateTips(dayIdx, el) {
+  currentData[dayIdx].tips = el.innerText.trim();
+  encodeUrl();
+}
+
+function setWeather(dayIdx, w) {
+  currentData[dayIdx].weather = w;
+  render();
+  encodeUrl();
+}
+
+function addDay() {
+  currentData.push({
+    date: '新日期', weekday: '周几', tag: '新标签', tagClass: 'tag-easy', weather: 'sunny',
+    activities: [{ time: '09:00', content: '新活动', note: '' }],
+    tips: ''
+  });
+  render();
+  encodeUrl();
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+function encodeUrl() {
+  try {
+    const json = JSON.stringify(currentData);
+    const encoded = btoa(encodeURIComponent(json));
+    const url = new URL(window.location.href);
+    url.searchParams.set('plan', encoded);
+    window.history.replaceState({}, '', url);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function decodeUrl() {
+  try {
+    const url = new URL(window.location.href);
+    const plan = url.searchParams.get('plan');
+    if (plan) {
+      const json = decodeURIComponent(atob(plan));
+      currentData = JSON.parse(json);
+      render();
+      return true;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  return false;
+}
+
+function sharePlan() {
+  const url = window.location.href;
+  document.getElementById('shareUrl').value = url;
+  document.getElementById('shareModal').classList.add('active');
+  QRCode.toSvg(url, { width: 180, margin: 2, color: { dark: '#2c2c2c', light: '#ffffff' } }, (err, svg) => {
+    if (!err) {
+      document.getElementById('qrCode').innerHTML = svg;
+    }
+  });
+}
+
+function closeModal() {
+  document.getElementById('shareModal').classList.remove('active');
+}
+
+function copyLink() {
+  const el = document.getElementById('shareUrl');
+  el.select();
+  navigator.clipboard.writeText(el.value).then(() => {
+    showToast('链接已复制到剪贴板');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function resetData() {
+  if (confirm('确定要重置为默认行程吗？所有修改将丢失。')) {
+    currentData = JSON.parse(JSON.stringify(defaultData));
+    const url = new URL(window.location.href);
+    url.searchParams.delete('plan');
+    window.history.replaceState({}, '', url);
+    render();
+    showToast('已重置为默认行程');
+  }
+}
+
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('shareBar');
+  if (window.scrollY > 200) {
+    bar.classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+  }
+});
+
+window.addEventListener('click', e => {
+  if (e.target === document.getElementById('shareModal')) closeModal();
+});
+
+if (!decodeUrl()) render();
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const hint = document.getElementById('editHint');
+    if (hint) {
+      hint.style.opacity = '0';
+      hint.style.transition = 'opacity 1s';
+      setTimeout(() => hint.remove(), 1000);
+    }
+  }, 5000);
+});
+</script>
+
+</body>
+</html>
